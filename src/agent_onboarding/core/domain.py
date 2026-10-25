@@ -14,6 +14,16 @@ class State(StrEnum):
     ACCOUNT_OPENED = "ACCOUNT_OPENED"
     REVIEW_REQUIRED = "REVIEW_REQUIRED"
 
+# What the agent should tell the customer in each state.
+NEXT_STEP = {
+    State.PREPARED: "IDENT_REQUIRED",
+    State.IDENTITY_VERIFIED: "CUSTOMER_INPUT_REQUIRED",
+    State.CHECKS_CLEARED: "CONSENT_REQUIRED",
+    State.CUSTOMER_CONFIRMED: "WAIT",
+    State.ACCOUNT_OPENED: "DONE",
+    State.REVIEW_REQUIRED: "REVIEW_REQUIRED",
+}
+
 
 class Rejected(Exception):
     def __init__(self, code):
@@ -44,6 +54,11 @@ def get_application(application_id):
         raise Rejected("UNKNOWN_APPLICATION")
     return APPLICATIONS[application_id]
 
+def get_agent_application(application_id, sub):
+    application = get_application(application_id)
+    if application.sub != sub:
+        raise Rejected("UNKNOWN_APPLICATION")
+    return application
 
 def require_state(application, state):
     if application.state != state:
