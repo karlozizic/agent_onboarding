@@ -26,6 +26,16 @@ def list_funds() -> dict:
 
 
 @mcp.tool()
+def get_requirements() -> dict:
+    return call("GET", "/requirements")
+
+
+@mcp.tool()
+def estimate_costs(fund_isin: str, monthly_amount: int) -> dict:
+    return call("GET", f"/funds/{fund_isin}/costs?monthly_amount={monthly_amount}")
+
+
+@mcp.tool()
 def start_account_opening(idempotency_key: str, fund_isin: str, monthly_amount: int) -> dict:
     body = {"idempotency_key": idempotency_key, "fund_isin": fund_isin, "monthly_amount": monthly_amount}
     return call("POST", "/applications", body)

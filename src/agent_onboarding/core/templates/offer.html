@@ -1,0 +1,8 @@
+{% set offer = application.offer %}
+{% set year, month, day = offer.kid_date.split("-") %}
+<section>
+  <p><small>Vom Agenten vorbereitet</small></p>
+  <p>{{ offer.fund_name }} ({{ offer.fund_isin }})</p>
+  <p>Sparplan: {{ offer.monthly_amount_eur }} EUR monatlich, laufende Kosten {{ offer.ongoing_costs_percent }} % p.a.</p>
+  <p><a href="/kid/{{ offer.fund_isin }}" target="_blank">Basisinformationsblatt</a> (Stand {{ day }}.{{ month }}.{{ year }})</p>
+</section>

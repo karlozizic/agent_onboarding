@@ -1,0 +1,8 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+{% if refresh %}<meta http-equiv="refresh" content="2">{% endif %}
+<title>{{ title }}</title>
+<link rel="stylesheet" href="/static/style.css">
+<h2>{{ title }}</h2>
+{% block content %}{% endblock %}

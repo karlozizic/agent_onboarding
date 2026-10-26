@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% set title = "Ihr Smartphone" %}
+{% set refresh = true %}
+{% block content %}
+{% for application in waiting %}
+  {% include "offer.html" %}
+  <p><a href="/device/{{ application.application_id }}?key={{ key }}">Antrag ansehen</a></p>
+{% else %}
+  <p>Keine offenen Anfragen.</p>
+{% endfor %}
+{% endblock %}

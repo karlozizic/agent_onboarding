@@ -1,8 +1,11 @@
+import os
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
 from agent_onboarding.core import domain, products
+
+BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
 
 
 class NewApplication(BaseModel):
@@ -28,4 +31,5 @@ def application_view(application):
         "version": application.version,
         "offer": application.offer,
         "offer_hash": products.offer_hash(application.offer),
+        "customer_link": f"{BASE_URL}/confirm/{application.application_id}"
     }

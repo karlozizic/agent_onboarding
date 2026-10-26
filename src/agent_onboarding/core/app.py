@@ -1,11 +1,13 @@
 import os
+from pathlib import Path
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 
-from agent_onboarding.core import products, domain
+from agent_onboarding.core import products, domain, pages
 from agent_onboarding.core.domain import Rejected
-from agent_onboarding.core.schemas import application_view, NewApplication, NewAmount, HumanRequest
+from agent_onboarding.core.schemas import BASE_URL, application_view, NewApplication, NewAmount, HumanRequest
 
 AGENTS = {
     os.environ.get("CORE_TOKEN", "dev-token"): {
@@ -15,6 +17,10 @@ AGENTS = {
 }
 
 app = FastAPI()
+
+app.include_router(pages.router)
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+
 
 @app.exception_handler(Rejected)
 def rejected(request, error):
@@ -34,7 +40,19 @@ def health(agent=Depends(current_agent)):
 
 @app.get("/funds")
 def funds(agent=Depends(current_agent)):
-    return products.FUNDS
+    return {isin: fund | {"kid_url": f"{BASE_URL}/kid/{isin}"} for isin, fund in products.FUNDS.items()}
+
+
+@app.get("/funds/{fund_isin}/costs")
+def costs(fund_isin: str, monthly_amount: int = Query(gt=0), agent=Depends(current_agent)):
+    if fund_isin not in products.FUNDS:
+        raise Rejected("UNKNOWN_FUND")
+    return products.estimate_costs(fund_isin, monthly_amount)
+
+
+@app.get("/requirements")
+def requirements(agent=Depends(current_agent)):
+    return {"requirements": products.REQUIREMENTS}
 
 
 @app.post("/applications", status_code=201)
