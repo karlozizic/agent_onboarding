@@ -77,11 +77,12 @@ def create_application(sub, client_id, idempotency_key, fund_isin, monthly_amoun
     if fund_isin not in FUNDS:
         raise Rejected("UNKNOWN_FUND")
 
+    application_id = uuid.uuid4().hex
     application = AccountApplication(
-        application_id=uuid.uuid4().hex,
+        application_id=application_id,
         sub=sub,
         client_id=client_id,
-        offer=build_offer(fund_isin, monthly_amount, 1),
+        offer=build_offer(application_id, fund_isin, monthly_amount, 1),
     )
     APPLICATIONS[application.application_id] = application
     APPLICATION_BY_KEY[key] = (application.application_id, request)
@@ -103,6 +104,7 @@ def answer_questions(application_id, answers, hausbank):
     require_state(application, State.IDENTITY_VERIFIED)
     application.answers = answers
     application.hausbank = hausbank
+    application.offer = application.offer | {"hausbank": hausbank}
     application.version += 1
 
 
@@ -125,7 +127,9 @@ def change_offer(application_id, monthly_amount, expected_version):
     if application.state in (State.ACCOUNT_OPENED, State.REVIEW_REQUIRED):
         raise Rejected("WRONG_STATE")
     old_offer = application.offer
-    application.offer = build_offer(old_offer["fund_isin"], monthly_amount, old_offer["offer_version"] + 1)
+    application.offer = build_offer(
+        application_id, old_offer["fund_isin"], monthly_amount, old_offer["offer_version"] + 1, application.hausbank
+    )
     if application.state == State.CUSTOMER_CONFIRMED:
         application.state = State.CHECKS_CLEARED
         application.confirmed_hash = ""

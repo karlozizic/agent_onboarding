@@ -33,9 +33,12 @@ PARTNER_BANKS = {
 }
 
 #ISIN - International Securities Identification Number
-def build_offer(fund_isin, monthly_amount, offer_version):
+# application_id and hausbank make the hash unique to this customer's application.
+def build_offer(application_id, fund_isin, monthly_amount, offer_version, hausbank=""):
     fund = FUNDS[fund_isin]
     return {
+        "application_id": application_id,
+        "hausbank": hausbank,
         "offer_version": offer_version,
         "fund_isin": fund_isin,
         "fund_name": fund["name"],
