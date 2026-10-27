@@ -1,12 +1,17 @@
 import os
+from typing import Annotated
 
 import httpx
 from mcp.server import MCPServer
+from pydantic import Field
 
 CORE_URL = os.environ.get("CORE_URL", "http://127.0.0.1:8000")
 CORE_TOKEN = os.environ.get("CORE_TOKEN", "dev-token")
 
 mcp = MCPServer("Account Onboarding")
+
+ApplicationId = Annotated[str, Field(pattern="^[0-9a-f]{32}$")]
+FundIsin = Annotated[str, Field(pattern="^[A-Z0-9]{12}$")]
 
 
 def call(method, path, body=None):
@@ -31,7 +36,7 @@ def get_requirements() -> dict:
 
 
 @mcp.tool()
-def estimate_costs(fund_isin: str, monthly_amount: int) -> dict:
+def estimate_costs(fund_isin: FundIsin, monthly_amount: int) -> dict:
     return call("GET", f"/funds/{fund_isin}/costs?monthly_amount={monthly_amount}")
 
 
@@ -42,18 +47,18 @@ def start_account_opening(idempotency_key: str, fund_isin: str, monthly_amount: 
 
 
 @mcp.tool()
-def get_application_status(application_id: str) -> dict:
+def get_application_status(application_id: ApplicationId) -> dict:
     return call("GET", f"/applications/{application_id}")
 
 
 @mcp.tool()
-def change_amount(application_id: str, monthly_amount: int, expected_version: int) -> dict:
+def change_amount(application_id: ApplicationId, monthly_amount: int, expected_version: int) -> dict:
     body = {"monthly_amount": monthly_amount, "expected_version": expected_version}
     return call("POST", f"/applications/{application_id}/amount", body)
 
 
 @mcp.tool()
-def request_human(application_id: str, reason: str) -> dict:
+def request_human(application_id: ApplicationId, reason: str) -> dict:
     return call("POST", f"/applications/{application_id}/human", {"reason": reason})
 
 

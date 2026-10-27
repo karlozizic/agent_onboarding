@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 
 from agent_onboarding.core import products, domain, pages
 from agent_onboarding.core.domain import Rejected
-from agent_onboarding.core.schemas import BASE_URL, application_view, NewApplication, NewAmount, HumanRequest
+from agent_onboarding.core.schemas import BASE_URL, ApplicationId, application_view, NewApplication, NewAmount, HumanRequest
 
 AGENTS = {
     os.environ.get("CORE_TOKEN", "dev-token"): {
@@ -68,19 +68,19 @@ def create_application(body: NewApplication, agent=Depends(current_agent)):
 
 
 @app.get("/applications/{application_id}")
-def get_application(application_id: str, agent=Depends(current_agent)):
+def get_application(application_id: ApplicationId, agent=Depends(current_agent)):
     return application_view(domain.get_agent_application(application_id, agent["sub"]))
 
 
 @app.post("/applications/{application_id}/amount")
-def change_amount(application_id: str, body: NewAmount, agent=Depends(current_agent)):
+def change_amount(application_id: ApplicationId, body: NewAmount, agent=Depends(current_agent)):
     domain.get_agent_application(application_id, agent["sub"])
     domain.change_offer(application_id, body.monthly_amount, body.expected_version)
     return application_view(domain.get_application(application_id))
 
 
 @app.post("/applications/{application_id}/human")
-def request_human(application_id: str, body: HumanRequest, agent=Depends(current_agent)):
+def request_human(application_id: ApplicationId, body: HumanRequest, agent=Depends(current_agent)):
     domain.get_agent_application(application_id, agent["sub"])
     if body.reason == "advice":
         return {"code": "ADVICE_HANDOFF"}

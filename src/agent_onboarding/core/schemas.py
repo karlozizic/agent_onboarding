@@ -1,11 +1,15 @@
 import os
-from typing import Literal
+from typing import Annotated, Literal
 
+from fastapi import Path
 from pydantic import BaseModel, Field
 
 from agent_onboarding.core import domain, products
 
 BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
+
+# Application ids are 32 hex characters (uuid4)
+ApplicationId = Annotated[str, Path(pattern="^[0-9a-f]{32}$")]
 
 
 class NewApplication(BaseModel):
