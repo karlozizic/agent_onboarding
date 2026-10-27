@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 from agent_onboarding.core import domain, products
 from agent_onboarding.core.domain import Rejected, State
+from agent_onboarding.core.schemas import ApplicationId
 
 DEVICE_KEY = os.environ.get("DEVICE_KEY", "phone-demo-key")
 
@@ -26,7 +27,7 @@ def back_to(application_id):
 
 
 @router.get("/confirm/{application_id}")
-def confirm_page(request: Request, application_id: str):
+def confirm_page(request: Request, application_id: ApplicationId):
     application = domain.get_application(application_id)
     context = {
         "application": application,
@@ -45,14 +46,14 @@ def kid_page(request: Request, fund_isin: str):
 
 
 @router.post("/confirm/{application_id}/eid")
-def eid_done(application_id: str):
+def eid_done(application_id: ApplicationId):
     domain.verify_identity(application_id, MOCK_EID)
     return back_to(application_id)
 
 
 @router.post("/confirm/{application_id}/answers")
 def answers_done(
-    application_id: str,
+    application_id: ApplicationId,
     knows_funds: bool = Form(False),
     knows_risk: bool = Form(False),
     knows_costs: bool = Form(False),
@@ -79,7 +80,7 @@ def device_inbox(request: Request, key: str = ""):
 
 
 @router.get("/device/{application_id}")
-def device_page(request: Request, application_id: str, key: str = ""):
+def device_page(request: Request, application_id: ApplicationId, key: str = ""):
     if key != DEVICE_KEY:
         raise HTTPException(status_code=403)
     application = domain.get_application(application_id)
@@ -97,7 +98,7 @@ def device_page(request: Request, application_id: str, key: str = ""):
 
 @router.post("/device/{application_id}/approve")
 def device_approve(
-    request: Request, application_id: str, nonce: str = Form(), offer_hash: str = Form(), key: str = ""
+    request: Request, application_id: ApplicationId, nonce: str = Form(), offer_hash: str = Form(), key: str = ""
 ):
     if key != DEVICE_KEY:
         raise HTTPException(status_code=403)
