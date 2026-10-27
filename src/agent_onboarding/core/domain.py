@@ -41,7 +41,6 @@ class AccountApplication:
     version: int = 1
     identity: dict = field(default_factory=dict)
     answers: dict = field(default_factory=dict)
-    hausbank: str = ""
     confirmed_hash: str = ""
 
 
@@ -103,7 +102,6 @@ def answer_questions(application_id, answers, hausbank):
     application = get_application(application_id)
     require_state(application, State.IDENTITY_VERIFIED)
     application.answers = answers
-    application.hausbank = hausbank
     application.offer = application.offer | {"hausbank": hausbank}
     application.version += 1
 
@@ -111,8 +109,6 @@ def answer_questions(application_id, answers, hausbank):
 def run_checks(application_id):
     application = get_application(application_id)
     require_state(application, State.IDENTITY_VERIFIED)
-    if not application.answers:
-        raise Rejected("CUSTOMER_INPUT_REQUIRED")
     if checks.aml_screening(application.identity):
         application.state = State.CHECKS_CLEARED
     else:
@@ -126,10 +122,8 @@ def change_offer(application_id, monthly_amount, expected_version):
         raise Rejected("VERSION_CONFLICT")
     if application.state in (State.ACCOUNT_OPENED, State.REVIEW_REQUIRED):
         raise Rejected("WRONG_STATE")
-    old_offer = application.offer
-    application.offer = build_offer(
-        application_id, old_offer["fund_isin"], monthly_amount, old_offer["offer_version"] + 1, application.hausbank
-    )
+    version = application.offer["offer_version"] + 1
+    application.offer = application.offer | {"monthly_amount_eur": monthly_amount, "offer_version": version}
     if application.state == State.CUSTOMER_CONFIRMED:
         application.state = State.CHECKS_CLEARED
         application.confirmed_hash = ""

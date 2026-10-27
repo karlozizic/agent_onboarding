@@ -1,7 +1,9 @@
 import hashlib
+
 import rfc8785
 
-#kid_date: date of the Key Information Document (KID) the customer is shown.
+# keys are ISINs (International Securities Identification Number).
+# kid_date: date of the Key Information Document (KID) the customer is shown.
 FUNDS = {
     "HRRBAGEQ0000": {
         "name": "RBA Global Equity Fund",
@@ -32,13 +34,12 @@ PARTNER_BANKS = {
     "SPK-MUENCHEN": "Stadtsparkasse München",
 }
 
-#ISIN - International Securities Identification Number
 # application_id and hausbank make the hash unique to this customer's application.
-def build_offer(application_id, fund_isin, monthly_amount, offer_version, hausbank=""):
+def build_offer(application_id, fund_isin, monthly_amount, offer_version):
     fund = FUNDS[fund_isin]
     return {
         "application_id": application_id,
-        "hausbank": hausbank,
+        "hausbank": "",
         "offer_version": offer_version,
         "fund_isin": fund_isin,
         "fund_name": fund["name"],

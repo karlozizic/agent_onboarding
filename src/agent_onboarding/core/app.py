@@ -2,12 +2,19 @@ import os
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import JSONResponse
 
-from agent_onboarding.core import products, domain, pages
+from agent_onboarding.core import domain, pages, products
 from agent_onboarding.core.domain import Rejected
-from agent_onboarding.core.schemas import BASE_URL, ApplicationId, application_view, NewApplication, NewAmount, HumanRequest
+from agent_onboarding.core.schemas import (
+    BASE_URL,
+    ApplicationId,
+    HumanRequest,
+    NewAmount,
+    NewApplication,
+    application_view,
+)
 
 AGENTS = {
     os.environ.get("CORE_TOKEN", "dev-token"): {
@@ -74,9 +81,9 @@ def get_application(application_id: ApplicationId, agent=Depends(current_agent))
 
 @app.post("/applications/{application_id}/amount")
 def change_amount(application_id: ApplicationId, body: NewAmount, agent=Depends(current_agent)):
-    domain.get_agent_application(application_id, agent["sub"])
+    application = domain.get_agent_application(application_id, agent["sub"])
     domain.change_offer(application_id, body.monthly_amount, body.expected_version)
-    return application_view(domain.get_application(application_id))
+    return application_view(application)
 
 
 @app.post("/applications/{application_id}/human")

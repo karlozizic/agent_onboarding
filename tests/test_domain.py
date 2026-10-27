@@ -94,7 +94,7 @@ def test_aml_hit_goes_to_review():
 def test_customer_declares_a_partner_bank():
     application = identified()
     domain.answer_questions(application.application_id, ANSWERS, "SPK-KOELNBONN")
-    assert application.hausbank == "SPK-KOELNBONN"
+    assert application.offer["hausbank"] == "SPK-KOELNBONN"
 
 
 def test_unknown_bank_is_rejected():

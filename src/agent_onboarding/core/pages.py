@@ -12,7 +12,7 @@ from agent_onboarding.core.schemas import ApplicationId
 
 DEVICE_KEY = os.environ.get("DEVICE_KEY", "phone-demo-key")
 
-# One-time values
+# application_id -> nonce of the last phone page shown; usable once.
 NONCES = {}
 
 # In production this comes from the eID provider.
@@ -88,7 +88,7 @@ def device_page(request: Request, application_id: ApplicationId, key: str = ""):
     NONCES[application_id] = nonce
     context = {
         "application": application,
-        "hausbank": products.PARTNER_BANKS.get(application.hausbank, "keine (Direktdepot)"),
+        "hausbank": products.PARTNER_BANKS.get(application.offer["hausbank"], "Keine (Direktdepot)"),
         "offer_hash": products.offer_hash(application.offer),
         "nonce": nonce,
         "key": key,
