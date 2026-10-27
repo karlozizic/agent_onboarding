@@ -109,7 +109,7 @@ def answer_questions(application_id, answers, hausbank):
 def run_checks(application_id):
     application = get_application(application_id)
     require_state(application, State.IDENTITY_VERIFIED)
-    if checks.aml_screening(application.identity):
+    if checks.passes_aml_screening(application.identity):
         application.state = State.CHECKS_CLEARED
     else:
         application.state = State.REVIEW_REQUIRED

@@ -11,7 +11,7 @@ BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
 # Application ids are 32 hex characters (uuid4)
 ApplicationId = Annotated[str, Path(pattern="^[0-9a-f]{32}$")]
 
-#upper limit because of hash
+# Assumed product limit for a monthly savings plan opened through an agent
 MAX_MONTHLY_AMOUNT = 100_000
 
 

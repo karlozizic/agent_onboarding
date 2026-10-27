@@ -12,6 +12,9 @@ mcp = MCPServer("Account Onboarding")
 
 ApplicationId = Annotated[str, Field(pattern="^[0-9a-f]{32}$")]
 FundIsin = Annotated[str, Field(pattern="^[A-Z0-9]{12}$")]
+# Same limits as the core API
+MonthlyAmount = Annotated[int, Field(gt=0, le=100_000)]
+IdempotencyKey = Annotated[str, Field(max_length=100)]
 
 
 def call(method, path, body=None):
@@ -36,12 +39,12 @@ def get_requirements() -> dict:
 
 
 @mcp.tool()
-def estimate_costs(fund_isin: FundIsin, monthly_amount: int) -> dict:
+def estimate_costs(fund_isin: FundIsin, monthly_amount: MonthlyAmount) -> dict:
     return call("GET", f"/funds/{fund_isin}/costs?monthly_amount={monthly_amount}")
 
 
 @mcp.tool()
-def start_account_opening(idempotency_key: str, fund_isin: str, monthly_amount: int) -> dict:
+def start_account_opening(idempotency_key: IdempotencyKey, fund_isin: FundIsin, monthly_amount: MonthlyAmount) -> dict:
     body = {"idempotency_key": idempotency_key, "fund_isin": fund_isin, "monthly_amount": monthly_amount}
     return call("POST", "/applications", body)
 
@@ -52,7 +55,7 @@ def get_application_status(application_id: ApplicationId) -> dict:
 
 
 @mcp.tool()
-def change_amount(application_id: ApplicationId, monthly_amount: int, expected_version: int) -> dict:
+def change_amount(application_id: ApplicationId, monthly_amount: MonthlyAmount, expected_version: int) -> dict:
     body = {"monthly_amount": monthly_amount, "expected_version": expected_version}
     return call("POST", f"/applications/{application_id}/amount", body)
 
