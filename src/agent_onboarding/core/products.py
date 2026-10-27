@@ -5,15 +5,15 @@ import rfc8785
 # keys are ISINs (International Securities Identification Number).
 # kid_date: date of the Key Information Document (KID) the customer is shown.
 FUNDS = {
-    "HRRBAGEQ0000": {
-        "name": "RBA Global Equity Fund",
+    "DE000DEMO015": {
+        "name": "Global Aktienfonds",
         "objective": "Langfristiges Wachstum durch Aktien weltweit.",
         "risk_class": 4,
         "ongoing_costs_percent": 1.2,
         "kid_date": "2026-09-30",
     },
-    "HRERSTEB0009": {
-        "name": "Erste Euro Bond Fund",
+    "DE000DEMO023": {
+        "name": "Euro Rentenfonds",
         "objective": "Stabile Erträge durch Anleihen in Euro.",
         "risk_class": 2,
         "ongoing_costs_percent": 0.6,

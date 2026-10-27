@@ -1,4 +1,4 @@
-from helpers import AGENT, OTHER, client, new_application
+from helpers import AGENT, AGENTS, OTHER, client, new_application
 
 from agent_onboarding.core import products
 
@@ -21,6 +21,25 @@ def test_amount_must_be_positive():
     assert new_application(amount=-5).status_code == 422
 
 
+def test_amount_has_an_upper_limit():
+    assert new_application(amount=2**60).status_code == 422
+
+
+def test_long_idempotency_key_is_rejected():
+    body = {"idempotency_key": "x" * 101, "fund_isin": "DE000DEMO015", "monthly_amount": 100}
+    assert client.post("/applications", json=body, headers=AGENT).status_code == 422
+
+
+def test_empty_token_is_never_accepted(monkeypatch):
+    monkeypatch.setitem(AGENTS, "", {"sub": "sub-empty", "client_id": "none"})
+    assert client.get("/health").status_code == 401
+
+
+def test_api_docs_are_off():
+    assert client.get("/docs").status_code == 404
+    assert client.get("/openapi.json").status_code == 404
+
+
 def test_other_agent_cannot_see_the_application():
     application_id = new_application().json()["application_id"]
     assert client.get(f"/applications/{application_id}", headers=OTHER).json() == {"code": "UNKNOWN_APPLICATION"}
@@ -38,7 +57,7 @@ def test_agent_can_tell_what_the_customer_needs():
 
 def test_costs_per_year():
     # 100 EUR a month = 1200 EUR a year; 1.2 % of that is 14.40 EUR
-    response = client.get("/funds/HRRBAGEQ0000/costs?monthly_amount=100", headers=AGENT)
+    response = client.get("/funds/DE000DEMO015/costs?monthly_amount=100", headers=AGENT)
     assert response.json() == {"paid_in_per_year_eur": 1200, "costs_per_year_eur": 14.4}
 
 

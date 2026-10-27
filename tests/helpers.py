@@ -14,7 +14,7 @@ ALL_YES = {"knows_funds": "on", "knows_risk": "on", "knows_costs": "on", "has_ex
 
 
 def new_application(headers=AGENT, amount=100):
-    body = {"idempotency_key": uuid.uuid4().hex, "fund_isin": "HRRBAGEQ0000", "monthly_amount": amount}
+    body = {"idempotency_key": uuid.uuid4().hex, "fund_isin": "DE000DEMO015", "monthly_amount": amount}
     return client.post("/applications", json=body, headers=headers)
 
 

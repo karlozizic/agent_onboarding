@@ -1,5 +1,5 @@
 import os
-from typing import Annotated
+from typing import Annotated, Literal
 
 import httpx
 from mcp.server import MCPServer
@@ -58,7 +58,7 @@ def change_amount(application_id: ApplicationId, monthly_amount: int, expected_v
 
 
 @mcp.tool()
-def request_human(application_id: ApplicationId, reason: str) -> dict:
+def request_human(application_id: ApplicationId, reason: Literal["advice", "person"]) -> dict:
     return call("POST", f"/applications/{application_id}/human", {"reason": reason})
 
 

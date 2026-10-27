@@ -11,15 +11,18 @@ BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
 # Application ids are 32 hex characters (uuid4)
 ApplicationId = Annotated[str, Path(pattern="^[0-9a-f]{32}$")]
 
+#upper limit because of hash
+MAX_MONTHLY_AMOUNT = 100_000
+
 
 class NewApplication(BaseModel):
-    idempotency_key: str
+    idempotency_key: str = Field(max_length=100)
     fund_isin: str
-    monthly_amount: int = Field(gt=0)
+    monthly_amount: int = Field(gt=0, le=MAX_MONTHLY_AMOUNT)
 
 
 class NewAmount(BaseModel):
-    monthly_amount: int = Field(gt=0)
+    monthly_amount: int = Field(gt=0, le=MAX_MONTHLY_AMOUNT)
     expected_version: int
 
 

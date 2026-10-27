@@ -21,3 +21,11 @@ async def test_tool_rejects_an_id_that_points_to_customer_pages():
     async with Client(mcp) as client:
         result = await client.call_tool("change_amount", arguments)
     assert result.is_error
+
+
+@pytest.mark.anyio
+async def test_agent_sees_the_allowed_reasons_for_a_human():
+    async with Client(mcp) as client:
+        tools = await client.list_tools()
+    tool = next(tool for tool in tools.tools if tool.name == "request_human")
+    assert tool.input_schema["properties"]["reason"]["enum"] == ["advice", "person"]

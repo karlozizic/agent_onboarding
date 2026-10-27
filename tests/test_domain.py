@@ -8,7 +8,7 @@ from agent_onboarding.core.domain import Rejected, State
 ANNA = {"given_name": "Anna", "family_name": "Schmidt", "birth_date": "1990-05-01"}
 BLOCKED = {"given_name": "Max", "family_name": "Blocked", "birth_date": "1980-01-01"}
 ANSWERS = {"knows_funds": True, "knows_risk": True, "knows_costs": True, "has_experience": True}
-FUND = "HRRBAGEQ0000"
+FUND = "DE000DEMO015"
 
 
 def new_application(key=""):

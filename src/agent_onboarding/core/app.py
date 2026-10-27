@@ -9,6 +9,7 @@ from agent_onboarding.core import domain, pages, products
 from agent_onboarding.core.domain import Rejected
 from agent_onboarding.core.schemas import (
     BASE_URL,
+    MAX_MONTHLY_AMOUNT,
     ApplicationId,
     HumanRequest,
     NewAmount,
@@ -23,7 +24,7 @@ AGENTS = {
     }
 }
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.include_router(pages.router)
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
@@ -36,7 +37,7 @@ def rejected(request, error):
 
 def current_agent(authorization: str = Header(default="")):
     token = authorization.removeprefix("Bearer ")
-    if token not in AGENTS:
+    if not token or token not in AGENTS:
         raise HTTPException(status_code = 401)
     return AGENTS[token]
 
@@ -51,7 +52,7 @@ def funds(agent=Depends(current_agent)):
 
 
 @app.get("/funds/{fund_isin}/costs")
-def costs(fund_isin: str, monthly_amount: int = Query(gt=0), agent=Depends(current_agent)):
+def costs(fund_isin: str, monthly_amount: int = Query(gt=0, le=MAX_MONTHLY_AMOUNT), agent=Depends(current_agent)):
     if fund_isin not in products.FUNDS:
         raise Rejected("UNKNOWN_FUND")
     return products.estimate_costs(fund_isin, monthly_amount)

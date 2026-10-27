@@ -65,9 +65,9 @@ def test_agent_gets_a_link_for_the_customer():
 
 def test_agent_gets_a_kid_link_for_each_fund():
     funds = client.get("/funds", headers=AGENT).json()
-    assert funds["HRERSTEB0009"]["kid_url"].endswith("/kid/HRERSTEB0009")
+    assert funds["DE000DEMO023"]["kid_url"].endswith("/kid/DE000DEMO023")
 
 
 def test_customer_can_read_the_kid():
-    assert "4 von 7" in client.get("/kid/HRRBAGEQ0000").text
+    assert "4 von 7" in client.get("/kid/DE000DEMO015").text
     assert client.get("/kid/UNKNOWN").status_code == 404
