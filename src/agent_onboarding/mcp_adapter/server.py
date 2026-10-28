@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 
 import httpx
 from mcp.server import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import Field
 
 CORE_URL = os.environ.get("CORE_URL", "http://127.0.0.1:8000")
@@ -20,6 +21,8 @@ IdempotencyKey = Annotated[str, Field(max_length=100)]
 def call(method, path, body=None):
     headers = {"Authorization": f"Bearer {CORE_TOKEN}"}
     response = httpx.request(method, f"{CORE_URL}{path}", json=body, headers=headers, timeout=5)
+    if response.is_error and response.status_code != 409:
+        raise ToolError(f"core returned {response.status_code}")
     return response.json()
 
 
