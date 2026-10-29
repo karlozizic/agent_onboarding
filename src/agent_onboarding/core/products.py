@@ -6,15 +6,15 @@ import rfc8785
 # kid_date: date of the Key Information Document (KID) the customer is shown.
 FUNDS = {
     "DE000DEMO015": {
-        "name": "Global Aktienfonds",
-        "objective": "Langfristiges Wachstum durch Aktien weltweit.",
+        "name": "Global Equity Fund",
+        "objective": "Long-term growth through shares worldwide.",
         "risk_class": 4,
         "ongoing_costs_percent": 1.2,
         "kid_date": "2026-09-30",
     },
     "DE000DEMO023": {
-        "name": "Euro Rentenfonds",
-        "objective": "Stabile Erträge durch Anleihen in Euro.",
+        "name": "Euro Bond Fund",
+        "objective": "Stable income from bonds in euro.",
         "risk_class": 2,
         "ongoing_costs_percent": 0.6,
         "kid_date": "2026-09-30",

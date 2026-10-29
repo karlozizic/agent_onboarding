@@ -1,38 +1,38 @@
 {% extends "base.html" %}
-{% set title = "Depot eröffnen" %}
+{% set title = "Open your depot" %}
 {% block content %}
 {% if application.state == "PREPARED" %}
   {% include "offer.html" %}
   <form method="post" action="/confirm/{{ application.application_id }}/eid">
-    <p><button>Mit Online-Ausweis identifizieren (Demo)</button></p>
+    <p><button>Identify with your online ID (demo)</button></p>
   </form>
 {% elif application.state == "IDENTITY_VERIFIED" %}
   {% include "offer.html" %}
   <form method="post" action="/confirm/{{ application.application_id }}/answers">
-    <p>Bitte beantworten Sie selbst:</p>
-    <label><input type="checkbox" name="knows_funds"> Ich weiß, wie Investmentfonds funktionieren.</label>
-    <label><input type="checkbox" name="knows_risk"> Ich weiß, dass ich Geld verlieren kann.</label>
-    <label><input type="checkbox" name="knows_costs"> Ich weiß, welche Kosten anfallen.</label>
-    <label><input type="checkbox" name="has_experience"> Ich habe schon in Fonds investiert.</label>
-    <label>Ihre Hausbank:
+    <p>Please answer these yourself:</p>
+    <label><input type="checkbox" name="knows_funds"> I know how investment funds work.</label>
+    <label><input type="checkbox" name="knows_risk"> I know that I can lose money.</label>
+    <label><input type="checkbox" name="knows_costs"> I know which costs apply.</label>
+    <label><input type="checkbox" name="has_experience"> I have invested in funds before.</label>
+    <label>Your Hausbank:
       <select name="hausbank">
-        <option value="">Keine (Direktdepot)</option>
+        <option value="">None (direct depot)</option>
         {% for code, name in banks.items() %}<option value="{{ code }}">{{ name }}</option>{% endfor %}
       </select>
     </label>
-    <button>Weiter</button>
+    <button>Continue</button>
   </form>
 {% elif application.state == "CHECKS_CLEARED" %}
   {% include "offer.html" %}
   {% if unsuitable %}
-  <p><b>Hinweis:</b> Nach Ihren Angaben ist dieses Produkt möglicherweise nicht angemessen.
-  Sie können den Antrag trotzdem auf Ihrem Smartphone bestätigen.</p>
+  <p><b>Note:</b> Based on your answers, this product may not be appropriate for you.
+  You can still confirm the application on your smartphone.</p>
   {% else %}
-  <p>Bitte bestätigen Sie den Antrag auf Ihrem Smartphone.</p>
+  <p>Please confirm the application on your smartphone.</p>
   {% endif %}
 {% elif application.state == "ACCOUNT_OPENED" %}
-  <p>Ihr Depot ist eröffnet.</p>
+  <p>Your depot is open.</p>
 {% else %}
-  <p>Wir prüfen Ihren Antrag und melden uns.</p>
+  <p>We are reviewing your application and will contact you.</p>
 {% endif %}
 {% endblock %}

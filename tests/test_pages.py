@@ -55,7 +55,7 @@ def test_phone_shows_the_declared_hausbank():
 
 def test_missing_knowledge_shows_a_warning():
     application = waiting_for_phone({"knows_funds": "on"})
-    assert "nicht angemessen" in client.get(f"/confirm/{application.application_id}").text
+    assert "may not be appropriate" in client.get(f"/confirm/{application.application_id}").text
 
 
 def test_agent_gets_a_link_for_the_customer():
@@ -69,5 +69,5 @@ def test_agent_gets_a_kid_link_for_each_fund():
 
 
 def test_customer_can_read_the_kid():
-    assert "4 von 7" in client.get("/kid/DE000DEMO015").text
+    assert "4 of 7" in client.get("/kid/DE000DEMO015").text
     assert client.get("/kid/UNKNOWN").status_code == 404

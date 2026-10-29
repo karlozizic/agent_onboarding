@@ -40,6 +40,6 @@ Add to `claude_desktop_config.json` (replace `<repo>` with the path to this fold
 1. Open the phone page: `http://127.0.0.1:8000/device?key=phone-demo-key`
 2. Ask Claude: *"I'd like to open a securities account and invest 100 EUR a month in a fund."*
 3. Open the `customer_link` Claude returns: identify (mock eID), answer the questions, pick a Hausbank.
-4. Open `http://127.0.0.1:8000/device?key=phone-demo-key`, click "Antrag ansehen" and press "Bestätigen". Then ask Claude for the status (`ACCOUNT_OPENED`).
+4. Open `http://127.0.0.1:8000/device?key=phone-demo-key`, click "View application" and press "Confirm". Then ask Claude for the status (`ACCOUNT_OPENED`).
 
 Data is kept in memory; restarting the server clears it.

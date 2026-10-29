@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% set title = "Basisinformationsblatt" %}
+{% set title = "Key Information Document" %}
 {% set year, month, day = fund.kid_date.split("-") %}
 {% block content %}
-<p><small>Demo-Dokument</small></p>
+<p><small>Demo document</small></p>
 <p><b>{{ fund.name }}</b> ({{ isin }})</p>
-<p><b>Ziel:</b> {{ fund.objective }}</p>
-<p><b>Risikoklasse:</b> {{ fund.risk_class }} von 7 (1 = niedrig, 7 = hoch). Sie können Geld verlieren.</p>
-<p><b>Laufende Kosten:</b> {{ fund.ongoing_costs_percent }} % pro Jahr</p>
-<p><small>Stand {{ day }}.{{ month }}.{{ year }}</small></p>
+<p><b>Objective:</b> {{ fund.objective }}</p>
+<p><b>Risk class:</b> {{ fund.risk_class }} of 7 (1 = low, 7 = high). You can lose money.</p>
+<p><b>Ongoing costs:</b> {{ fund.ongoing_costs_percent }} % per year</p>
+<p><small>As of {{ day }}.{{ month }}.{{ year }}</small></p>
 {% endblock %}

@@ -88,7 +88,7 @@ def device_page(request: Request, application_id: ApplicationId, key: str = ""):
     NONCES[application_id] = nonce
     context = {
         "application": application,
-        "hausbank": products.PARTNER_BANKS.get(application.offer["hausbank"], "Keine (Direktdepot)"),
+        "hausbank": products.PARTNER_BANKS.get(application.offer["hausbank"], "None (direct depot)"),
         "offer_hash": products.offer_hash(application.offer),
         "nonce": nonce,
         "key": key,

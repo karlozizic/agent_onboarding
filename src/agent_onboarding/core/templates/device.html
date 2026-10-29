@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% set title = "Ihr Smartphone" %}
+{% set title = "Your smartphone" %}
 {% block content %}
 {% if opened %}
-  <p>Bestätigt. Ihr Depot ist eröffnet.</p>
-  <p><a href="/device?key={{ key }}">Zurück</a></p>
+  <p>Confirmed. Your depot is open.</p>
+  <p><a href="/device?key={{ key }}">Back</a></p>
 {% else %}
   {% include "offer.html" %}
-  <p>Hausbank: {{ hausbank }}<br>Prüfcode: {{ offer_hash[:12] }}</p>
+  <p>Hausbank: {{ hausbank }}<br>Check code: {{ offer_hash[:12] }}</p>
   <form method="post" action="/device/{{ application.application_id }}/approve?key={{ key }}">
     <input type="hidden" name="nonce" value="{{ nonce }}">
     <input type="hidden" name="offer_hash" value="{{ offer_hash }}">
-    <button>Bestätigen</button>
+    <button>Confirm</button>
   </form>
 {% endif %}
 {% endblock %}
